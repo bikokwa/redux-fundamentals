@@ -1,21 +1,21 @@
-import { compose, createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
 import rootReducer from './reducer'
-import {
-  includeMeaningOfLife,
-  sayHiOnDispatch,
-} from './exampleAddons/enhancers'
 
-let preloadedState
-const persistedTodosString = localStorage.getItem('todos')
+import { print1, print2, print3 } from './exampleAddons/middleware'
 
-if (persistedTodosString) {
-  preloadedState = {
-    todos: JSON.parse(persistedTodosString),
-  }
-}
+// let preloadedState
+// const persistedTodosString = localStorage.getItem('todos')
 
-const composedEnhancer = compose(sayHiOnDispatch, includeMeaningOfLife)
+// if (persistedTodosString) {
+//   preloadedState = {
+//     todos: JSON.parse(persistedTodosString),
+//   }
+// }
 
-const store = createStore(rootReducer, undefined, composedEnhancer)
+// const composedEnhancer = compose(sayHiOnDispatch, includeMeaningOfLife)
+
+const middlewareEnhancer = applyMiddleware(print1, print2, print3)
+
+const store = createStore(rootReducer, undefined, middlewareEnhancer)
 
 export default store
