@@ -1,7 +1,14 @@
 import { applyMiddleware, createStore } from 'redux'
 import rootReducer from './reducer'
 
-import { print1, print2, print3 } from './exampleAddons/middleware'
+const delayedMessageMiddleware = (storeAPI) => (next) => (action) => {
+  if (action.type === 'todos/todoAdded') {
+    setTimeout(() => {
+      console.log('Added a new todo: ', action.payload)
+    }, 1000)
+  }
+  return next(action)
+}
 
 // let preloadedState
 // const persistedTodosString = localStorage.getItem('todos')
@@ -14,7 +21,7 @@ import { print1, print2, print3 } from './exampleAddons/middleware'
 
 // const composedEnhancer = compose(sayHiOnDispatch, includeMeaningOfLife)
 
-const middlewareEnhancer = applyMiddleware(print1, print2, print3)
+const middlewareEnhancer = applyMiddleware(delayedMessageMiddleware)
 
 const store = createStore(rootReducer, undefined, middlewareEnhancer)
 
