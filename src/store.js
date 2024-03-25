@@ -10,17 +10,6 @@ const delayedMessageMiddleware = (storeAPI) => (next) => (action) => {
   return next(action)
 }
 
-// let preloadedState
-// const persistedTodosString = localStorage.getItem('todos')
-
-// if (persistedTodosString) {
-//   preloadedState = {
-//     todos: JSON.parse(persistedTodosString),
-//   }
-// }
-
-// const composedEnhancer = compose(sayHiOnDispatch, includeMeaningOfLife)
-
 const middlewareEnhancer = applyMiddleware(delayedMessageMiddleware)
 
 const store = createStore(rootReducer, undefined, middlewareEnhancer)

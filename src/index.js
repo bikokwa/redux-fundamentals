@@ -7,11 +7,6 @@ import './api/server'
 import store from './store'
 import { Provider } from 'react-redux'
 
-store.dispatch({
-  type: 'todos/todoAdded',
-  payload: 'Learn about actions',
-})
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
