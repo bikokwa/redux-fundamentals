@@ -61,19 +61,33 @@ export default function todosReducer(state = initialState, action) {
   }
 }
 
-// Thunk function
-export async function fetchTodos(dispatch, getState) {
-  const response = await client.get('/fakeApi/todos')
-  dispatch({ type: 'todos/todosLoaded', payload: response.todos })
+// Action Creators
+export const todosLoaded = (todos) => {
+  return {
+    type: 'todos/todosLoaded',
+    payload: todos,
+  }
 }
 
-// Write a synchronous outer function that receives the `text` parameter
+export const todoAdded = (todo) => {
+  return {
+    type: 'todos/todoAdded',
+    payload: todo,
+  }
+}
+
+// Thunk function
+export function fetchTodos() {
+  return async function fetchTodosThunk(dispatch, getState) {
+    const response = await client.get('/fakeApi/todos')
+    dispatch(todosLoaded(response.todos))
+  }
+}
+
 export function saveNewTodo(text) {
-  // And then creates and returns the async thunk function
   return async function saveNewTodoThunk(dispatch, getState) {
-    // Now we can use the text value and send it to the server
     const initialTodo = { text }
     const response = await client.post('/fakeApi/todos', { todo: initialTodo })
-    dispatch({ type: 'todos/todoAdded', payload: response.todo })
+    dispatch(todoAdded(response.todo))
   }
 }
