@@ -2,25 +2,31 @@ import { createSelector } from 'reselect'
 import { client } from '../../api/client'
 import { StatusFilters } from '../filters/filtersSlice'
 
-const initialState = []
+const initialState = {
+  status: 'idle',
+  entities: [],
+}
 
 export default function todosReducer(state = initialState, action) {
   switch (action.type) {
     case 'todos/todoAdded': {
       // Can return just the new todos array - no extra object around it
-      return [...state, action.payload]
+      return [...state.entities, action.payload]
     }
     case 'todos/todoToggled': {
-      return state.map((todo) => {
-        if (todo.id !== action.payload) {
-          return todo
-        }
+      return {
+        ...state,
+        entities: state.entities.map((todo) => {
+          if (todo.id !== action.payload) {
+            return todo
+          }
 
-        return {
-          ...todo,
-          completed: !todo.completed,
-        }
-      })
+          return {
+            ...todo,
+            completed: !todo.completed,
+          }
+        }),
+      }
     }
     case 'todos/colorSelected': {
       const { color, todoId } = action.payload
@@ -90,7 +96,7 @@ export function saveNewTodo(text) {
 }
 
 // Selectors
-export const selectTodos = (state) => state.todos
+export const selectTodos = (state) => state.todos.entities
 
 export const selectTodoById = (state, todoId) => {
   return selectTodos(state).find((todo) => todo.id === todoId)
