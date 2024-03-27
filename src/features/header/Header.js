@@ -4,30 +4,42 @@ import { saveNewTodo } from '../todos/todosSlice'
 
 const Header = () => {
   const [text, setText] = useState('')
+  const [status, setStatus] = useState('idle')
   const dispatch = useDispatch()
 
   const handleChange = (e) => setText(e.target.value)
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = async (e) => {
     const trimmedText = e.target.value.trim()
     // If the user pressed the Entry key:
     if (e.key === 'Enter' && trimmedText) {
-      // Dispatch the "todo added" action with this text
-      dispatch(saveNewTodo(trimmedText))
+      // Create and dispatch the thunk function itself
+      setStatus('loading')
+      // Wait for the promise returned by saveNewTodo
+      await dispatch(saveNewTodo(trimmedText))
       // And clear out the text input
       setText('')
+      setStatus('idle')
     }
   }
 
+  let isLoading = status === 'loading'
+  let placeholder = isLoading ? '' : 'What needs to be done?'
+  let loader = isLoading ? <div className="loader" /> : null
+
   return (
-    <input
-      type="text"
-      placeholder="What needs to be done?"
-      autoFocus={true}
-      value={text}
-      onChange={handleChange}
-      onKeyDown={handleKeyDown}
-    />
+    <header className="header">
+      <input
+        className="new-todo"
+        placeholder={placeholder}
+        autoFocus={true}
+        value={text}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        disabled={isLoading}
+      />
+      {loader}
+    </header>
   )
 }
 
